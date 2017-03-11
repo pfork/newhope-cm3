@@ -7,11 +7,9 @@
     .endm
 
 	.macro barrett a, q, t
-	  //mov \t,#5
-	  //smulwb \t,\a,\t
-     LSL \t,\a,#2
-     ADD \t,\a
-     LSR \t,#16
+	  lsl \t,\a,#2
+	  add \t,\a
+	  lsr \t,#16
 	  mls \a,\t,\q,\a
 	.endm
 	.macro butterfly a0,a1,q,t
@@ -39,7 +37,7 @@
 	//
     .align 4
 	.syntax unified
-  .cpu cortex-m3
+	.cpu cortex-m3
   .fpu softvfp
   .thumb
 	//.cpu cortex-m4
@@ -421,7 +419,7 @@ barrett_reduce:
     .align 4
 	.syntax unified
 	//.cpu cortex-m4
-  .cpu cortex-m3
+	.cpu cortex-m3
   .fpu softvfp
   .thumb
 
@@ -442,62 +440,78 @@ looppsis1:
 	ldm r0,{r3,r4}
 	ldm r1!,{r7,r8}
 	
-	smulbb r5,r3,r7
+	ubfx r5,r3,#0,#16
+	ubfx r9,r7,#0,#16
+	mul r5,r9
 	mul r9,r5,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r5
 	lsr r5,r9,#18
-	smultt r6,r3,r7
+	lsr r6,r3,#16
+	lsr r9,r7,#16
+	mul r6,r9
 	mul r9,r6,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r6
 	lsr r6,r9,#2
-	pkhbt r3, r5, r6
+	orr r3, r5, r6
 	
-	smulbb r5,r4,r8
+	ubfx r5,r4,#0,#16
+	ubfx r9,r8,#0,#16
+	mul r5,r9
 	mul r9,r5,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r5
 	lsr r5,r9,#18
-	smultt r6,r4,r8
+	lsr r6,r4,#16
+	lsr r9,r8,#16
+	mul r6,r9
 	mul r9,r6,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r6
 	lsr r6,r9,#2
-	pkhbt r4, r5, r6
+	orr r4, r5, r6
 
 	stm r0!,{r3,r4}
 
 
 	ldm r10,{r5,r6}
 	
-	smulbb r3,r5,r7
+	ubfx r3,r5,#0,#16
+	ubfx r9,r7,#0,#16
+	mul r3,r9
 	mul r3,r11
 	mul r9,r3,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r3
 	lsr r3,r9,#18
-	smultt r7,r5,r7
+	lsr r7,#16
+	lsr r9,r5,#16
+	mul r7,r9
 	mul r7,r11
 	mul r9,r7,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r7
 	lsr r7,r9,#2
-	pkhbt r5, r3, r7
+	orr r5, r3, r7
 	
-	smulbb r3,r6,r8
+	ubfx r3,r6,#0,#16
+	ubfx r9,r8,#0,#16
+	mul r3,r9
 	mul r3,r11
 	mul r9,r3,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r3
 	lsr r3,r9,#18
-	smultt r8,r6,r8
+	lsr r8,#16
+	lsr r6,#16
+	mul r8,r6
 	mul r8,r11
 	mul r9,r8,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r8
 	lsr r8,r9,#2
-	pkhbt r6, r3, r8
+	orr r6, r3, r8
 
 	stm r10!,{r5,r6}
 
@@ -514,7 +528,7 @@ looppsis1:
     .align 4
 	.syntax unified
 	//.cpu cortex-m4
-  .cpu cortex-m3
+	.cpu cortex-m3
   .fpu softvfp
   .thumb
 
@@ -533,56 +547,72 @@ looptop:
 	ldm r0,{r3,r4}
 	ldm r1!,{r7,r8}
 	
-	smulbb r5,r3,r7
+	ubfx r5,r3,#0,#16
+	ubfx r11,r7,#0,#16
+	mul r5,r11
 	mul r9,r5,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r5
 	lsr r5,r9,#18
-	smultt r6,r3,r7
+	lsr r6,r3,#16
+	lsr r11,r7,#16
+	mul r6,r11
 	mul r9,r6,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r6
 	lsr r6,r9,#2
-	pkhbt r3, r5, r6
+	orr r3, r5, r6
 	
-	smulbb r5,r4,r8
+	ubfx r5,r4,#0,#16
+	ubfx r11,r8,#0,#16
+	mul r5,r11
 	mul r9,r5,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r5
 	lsr r5,r9,#18
-	smultt r6,r4,r8
+	lsr r6,r4,#16
+	lsr r11,r8,#16
+	mul r6,r11
 	mul r9,r6,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r6
 	lsr r6,r9,#2
-	pkhbt r4, r5, r6
+	orr r4, r5, r6
 
 	ldrd r5,r6,[r0,#8]
 	ldm r1!,{r7,r8}
 	
-	smulbb r10,r5,r7
+	ubfx r10,r5,#0,#16
+	ubfx r11,r7,#0,#16
+	mul r10,r11
 	mul r9,r10,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r10
 	lsr r10,r9,#18
-	smultt r7,r5,r7
+	lsr r11,r5,#16
+	lsr r7,r7,#16
+	mul r7,r11
 	mul r9,r7,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r7
 	lsr r7,r9,#2
-	pkhbt r5, r10, r7
+	orr r5, r10, r7
 	
-	smulbb r10,r6,r8
+	ubfx r10,r6,#0,#16
+	ubfx r11,r8,#0,#16
+	mul r10,r11
 	mul r9,r10,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r10
 	lsr r10,r9,#18
-	smultt r8,r6,r8
+	lsr r11,r6,#16
+	lsr r8,r8,#16
+	mul r8,r11
 	mul r9,r8,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r8
 	lsr r8,r9,#2
-	pkhbt r6, r10, r8
+	orr r6, r10, r8
 
     stm r0!,{r3,r4,r5,r6}
 
@@ -597,7 +627,7 @@ looptop:
     .align 2
 	.syntax unified
 	//.cpu cortex-m4
-  .cpu cortex-m3
+	.cpu cortex-m3
   .fpu softvfp
   .thumb
 
@@ -652,96 +682,112 @@ looptopp:
 	ldm r2!,{r7,r8}
 	push {r10}
 	
-	smulbb r5,r11,r7
+	ubfx r5,r7,#0,#16
+	mul r5,r11,r5
 	mul r9,r5,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r5
 	lsr r5,r9,#18
-	smulbb r5,r5,r3
+	ubfx r9,r3,#0,#16
+	mul r5,r9
 	mul r9,r5,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r5
 	lsr r5,r9,#18
-	smulbt r6,r11,r7
+	lsr r7,#16
+	mul r6,r11,r7
 	mul r9,r6,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r6
 	lsr r6,r9,#18
-	smulbt r6,r6,r3
+	lsr r3,#16
+	mul r6,r6,r3
 	mul r9,r6,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r6
 	lsr r6,r9,#2
-	pkhbt r3, r5, r6
+	orr r3, r5, r6
 	
-	smulbb r5,r11,r8
+	ubfx r5,r8,#0,#16
+	mul r5,r11
 	mul r9,r5,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r5
 	lsr r5,r9,#18
-	smulbb r5,r5,r4
+	ubfx r9,r4,#0,#16
+	mul r5,r5,r9
 	mul r9,r5,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r5
 	lsr r5,r9,#18
-	smulbt r6,r11,r8
+	lsr r8,#16
+	mul r6,r11,r8
 	mul r9,r6,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r6
 	lsr r6,r9,#18
-	smulbt r6,r6,r4
+	lsr r4,#16
+	mul r6,r6,r4
 	mul r9,r6,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r6
 	lsr r6,r9,#2
-	pkhbt r4, r5, r6
+	orr r4, r5, r6
 
 	ldrd r5,r6,[r1],#8
 	ldm r2!,{r7,r8}
 	
-	smulbb r10,r11,r7
+	ubfx r10,r7,#0,#16
+	mul r10,r11,r10
 	mul r9,r10,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r10
 	lsr r10,r9,#18
-	smulbb r10,r10,r5
+	ubfx r9,r5,#0,#16
+	mul r10,r10,r9
 	mul r9,r10,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r10
 	lsr r10,r9,#18
-	smulbt r7,r11,r7
+	lsr r7,#16
+	mul r7,r11,r7
 	mul r9,r7,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r7
 	lsr r7,r9,#18
-	smulbt r7,r7,r5
+	lsr r5,#16
+	mul r7,r7,r5
 	mul r9,r7,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r7
 	lsr r7,r9,#2
-	pkhbt r5, r10, r7
+	orr r5, r10, r7
 	
-	smulbb r10,r11,r8
+	ubfx r10,r8,#0,#16
+	mul r10,r11,r10
 	mul r9,r10,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r10
 	lsr r10,r9,#18
-	smulbb r10,r10,r6
+	ubfx r9,r6,#0,#16
+	mul r10,r10,r9
 	mul r9,r10,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r10
 	lsr r10,r9,#18
-	smulbt r8,r11,r8
+	lsr r8,#16
+	mul r8,r11,r8
 	mul r9,r8,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r8
 	lsr r8,r9,#18
-	smulbt r8,r8,r6
+	lsr r6,#16
+	mul r8,r8,r6
 	mul r9,r8,r12
 	ubfx r9,r9,#0,#18
 	mla r9,r9,r14,r8
 	lsr r8,r9,#2
-	pkhbt r6, r10, r8
+	orr r6, r10, r8
     pop {r10}
     stm r0!,{r3,r4,r5,r6}
 

@@ -3,7 +3,6 @@
 #include "randombytes.h"
 #include "fips202.h"
 #include "crypto_stream_chacha20.h"
-#include "stm32f4_wrapper.h"
 
 
 void poly_frombytes(poly *r, const unsigned char *a)
